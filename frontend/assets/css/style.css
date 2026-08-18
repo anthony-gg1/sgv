@@ -1,0 +1,139 @@
+:root {
+  --sgv-dark: #212529;
+  --sgv-gray-medium: #adb5bd;
+  --sgv-gray-dark: #495057;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+}
+
+main {
+  flex: 1;
+}
+
+.navbar-brand,
+.footer-logo {
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.card-main {
+  background-color: var(--sgv-gray-medium);
+  border: none;
+  min-height: 220px;
+}
+
+.card-main .card-title {
+  color: var(--sgv-dark);
+  font-weight: 700;
+}
+
+.card-main .card-text {
+  color: #343a40;
+  line-height: 1.6;
+}
+
+.nav-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  padding: 1.25rem;
+  background-color: var(--sgv-gray-dark);
+  color: #ffffff;
+  text-decoration: none;
+  text-align: center;
+  border: 2px solid #3d4349;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+              transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.nav-btn:hover {
+  background-color: #3d4349;
+  border-color: #565e64;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 0.35rem 0.75rem rgba(0, 0, 0, 0.25) !important;
+}
+
+.nav-btn:active {
+  transform: translateY(0);
+  background-color: #343a40;
+  border-color: #343a40;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.35) !important;
+}
+
+.nav-btn:focus-visible {
+  outline: 2px solid #adb5bd;
+  outline-offset: 3px;
+}
+
+.nav-btn-title {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.nav-btn-text {
+  color: #dee2e6;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+footer {
+  background-color: var(--sgv-dark);
+}
+
+.auth-card {
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.stat-card {
+  border: none;
+  border-left: 4px solid var(--sgv-gray-dark);
+}
+
+.stat-card.positive {
+  border-left-color: #198754;
+}
+
+.stat-card.negative {
+  border-left-color: #dc3545;
+}
+
+.chart-container {
+  position: relative;
+  height: 280px;
+}
+
+.table-actions {
+  white-space: nowrap;
+}
+
+.page-hero {
+  background: linear-gradient(135deg, #343a40 0%, #212529 100%);
+  color: #fff;
+  padding: 2.5rem 0;
+  margin-bottom: 2rem;
+}
+
+.page-hero h1 {
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.page-hero p {
+  color: #ced4da;
+  margin-bottom: 0;
+}

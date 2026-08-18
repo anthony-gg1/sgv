@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel — SGV</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+      <a class="navbar-brand" href="index.html">SGV</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav" id="auth-nav">
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="dashboard.html">Painel</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <div class="container">
+      <h1>Painel de Vendas</h1>
+      <p id="empresa-nome">Carregando...</p>
+    </div>
+  </div>
+
+  <main class="pb-5">
+    <div class="container">
+      <div id="alert-container" class="mb-3"></div>
+
+      <!-- Resumo -->
+      <div class="row g-3 mb-4">
+        <div class="col-6 col-lg-3">
+          <div class="card stat-card shadow-sm h-100">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Produtos</p>
+              <h2 class="h4 mb-0" id="stat-produtos">0</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="card stat-card shadow-sm h-100">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Vendas</p>
+              <h2 class="h4 mb-0" id="stat-vendas">0</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="card stat-card shadow-sm h-100">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Lucro total</p>
+              <h2 class="h4 mb-0 text-success" id="stat-lucro">R$ 0,00</h2>
+            </div>
+          </div>
+        </div>
+        <div class="col-6 col-lg-3">
+          <div class="card stat-card shadow-sm h-100" id="stat-variacao-card">
+            <div class="card-body">
+              <p class="text-muted small mb-1">Variação mensal</p>
+              <h2 class="h4 mb-0" id="stat-variacao">0%</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparativo -->
+      <div class="row g-4 mb-4">
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h3 class="h6 text-muted">Lucro consolidado</h3>
+              <p class="h3 fw-bold mb-0" id="lucro-consolidado">R$ 0,00</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h3 class="h6 text-muted">Lucro — mês atual</h3>
+              <p class="h3 fw-bold mb-0" id="mes-atual-lucro">R$ 0,00</p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h3 class="h6 text-muted">Lucro — mês anterior</h3>
+              <p class="h3 fw-bold mb-0" id="mes-anterior-lucro">R$ 0,00</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gráficos -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h2 class="h6 fw-bold mb-3">Lucro por produto</h2>
+              <div class="chart-container">
+                <canvas id="chart-lucros"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+              <h2 class="h6 fw-bold mb-3">Comparativo mensal</h2>
+              <div class="chart-container">
+                <canvas id="chart-comparativo"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Produtos e Vendas -->
+      <div class="row g-4 mb-4">
+        <div class="col-lg-5">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <h2 class="h6 fw-bold mb-3" id="form-produto-title">Cadastrar produto</h2>
+              <form id="form-produto">
+                <input type="hidden" id="produto-id">
+                <div class="mb-3">
+                  <label class="form-label" for="produto-nome">Nome</label>
+                  <input type="text" class="form-control" id="produto-nome" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label" for="produto-descricao">Descrição</label>
+                  <input type="text" class="form-control" id="produto-descricao">
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label" for="produto-venda">Preço de venda (R$)</label>
+                    <input type="number" class="form-control" id="produto-venda" step="0.01" min="0" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="produto-custo">Preço de custo (R$)</label>
+                    <input type="number" class="form-control" id="produto-custo" step="0.01" min="0" required>
+                  </div>
+                </div>
+                <div class="d-flex gap-2">
+                  <button type="submit" class="btn btn-dark">Salvar</button>
+                  <button type="button" class="btn btn-outline-secondary d-none" id="btn-cancelar-edicao">Cancelar</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <div class="card shadow-sm border-0 mt-4">
+            <div class="card-body p-4">
+              <h2 class="h6 fw-bold mb-3">Registrar venda</h2>
+              <form id="form-venda">
+                <div class="mb-3">
+                  <label class="form-label" for="venda-produto">Produto</label>
+                  <select class="form-select" id="venda-produto" required></select>
+                </div>
+                <div class="row g-2 mb-3">
+                  <div class="col-6">
+                    <label class="form-label" for="venda-quantidade">Quantidade</label>
+                    <input type="number" class="form-control" id="venda-quantidade" min="1" required>
+                  </div>
+                  <div class="col-6">
+                    <label class="form-label" for="venda-data">Data</label>
+                    <input type="date" class="form-control" id="venda-data" required>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-dark">Registrar venda</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-4">
+              <h2 class="h6 fw-bold mb-3">Produtos cadastrados</h2>
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Descrição</th>
+                      <th>Venda</th>
+                      <th>Custo</th>
+                      <th>Lucro un.</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabela-produtos"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <h2 class="h6 fw-bold mb-3">Histórico de vendas</h2>
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Data</th>
+                      <th>Produto</th>
+                      <th>Qtd</th>
+                      <th>Receita</th>
+                      <th>Lucro</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="tabela-vendas"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="py-3 mt-auto">
+    <div class="container"><span class="footer-logo text-white">SGV</span></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+  <script>
+    document.getElementById('venda-data').value = new Date().toISOString().slice(0, 10);
+  </script>
+</body>
+</html>
