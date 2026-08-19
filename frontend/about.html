@@ -1,99 +1,211 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>About Us — SGV</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Previne FOUC: aplica classe dark antes de renderizar o body -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('sgv_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              750: '#293548',
+              850: '#172033',
+              950: '#0b1120',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Gerenciador de Tema & Estilos -->
+  <script src="assets/js/theme.js"></script>
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased">
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">SGV</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav" id="auth-nav">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="sign-in.html">Sign-in</a></li>
-          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        </ul>
+  <!-- Navbar -->
+  <nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-400 dark:via-purple-400 dark:to-violet-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+          SGV
+        </a>
+        
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-6">
+          <div class="flex items-center gap-6" id="auth-nav">
+            <a href="index.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Home</a>
+            <a href="sign-in.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Sign-in</a>
+            <a href="login.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Login</a>
+            <a href="about.html" class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 dark:border-indigo-400 pb-1">About Us</a>
+          </div>
+
+          <!-- Theme Switcher Button -->
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+          
+          <button id="mobile-menu-toggle" class="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 space-y-2 border-t border-slate-100 dark:border-slate-800">
+        <a href="index.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Home</a>
+        <a href="sign-in.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Sign-in</a>
+        <a href="login.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Login</a>
+        <a href="about.html" class="block px-4 py-2 bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold rounded-lg transition-colors">About Us</a>
       </div>
     </div>
   </nav>
 
-  <div class="page-hero">
-    <div class="container">
-      <h1>About Us</h1>
-      <p>Conheça a equipe por trás do Sistema de Gerenciamento de Vendas.</p>
+  <!-- Page Hero -->
+  <section class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white py-12 sm:py-16 border-b border-indigo-500/20 dark:border-slate-800 shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center sm:text-left">
+      <h1 class="text-4xl sm:text-5xl font-black tracking-tight mb-3">Sobre o SGV</h1>
+      <p class="text-lg text-indigo-100 dark:text-slate-300 max-w-2xl">Conheça a visão, os desenvolvedores e as tecnologias por trás da plataforma.</p>
     </div>
-  </div>
+  </section>
 
-  <main class="pb-5">
-    <div class="container">
-      <div class="row g-4">
-        <div class="col-md-8 mx-auto">
-          <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
-              <h2 class="h5 fw-bold mb-3">Sobre o projeto</h2>
-              <p class="text-muted mb-0">
-                O SGV é uma aplicação web desenvolvida para auxiliar empresas no controle de
-                vendas, cálculo de lucros e análise de desempenho comercial. O sistema permite
-                cadastrar produtos, registrar vendas, visualizar relatórios gráficos e comparar
-                resultados entre meses consecutivos.
-              </p>
+  <main class="flex-1 py-12 sm:py-16 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto space-y-8 sm:space-y-12">
+      <!-- About Project Section -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8">
+        <div class="flex items-start gap-4 mb-4">
+          <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-md shadow-indigo-500/20">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-3">A Plataforma</h2>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
+              O **SGV (Sistema de Gerenciamento de Vendas)** foi projetado para capacitar micro, pequenas e médias empresas no controle inteligente de suas operações comerciais. A plataforma oferece cálculo automatizado de margem de lucro por item, apuração de receita total, relatórios gráficos interativos e comparativos mensais precisos.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Section -->
+      <div>
+        <h2 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-8 text-center tracking-tight">Time de Desenvolvimento</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Member 1 -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 text-center">
+            <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center text-white font-black text-3xl shadow-lg shadow-indigo-500/20">
+              A
             </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-1">Anthony</h3>
+            <p class="text-emerald-600 dark:text-emerald-400 font-semibold text-xs uppercase tracking-wider mb-3">Desenvolvedor Full-Stack</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              Arquitetura de API REST, segurança JWT, modelagem relacional de banco de dados e lógica financeira do sistema.
+            </p>
           </div>
 
-          <div class="row g-4">
-            <div class="col-md-6">
-              <div class="card shadow-sm border-0 h-100">
-                <div class="card-body p-4 text-center">
-                  <div class="rounded-circle bg-dark text-white d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;font-weight:700;">A</div>
-                  <h3 class="h6 fw-bold">Anthony</h3>
-                  <p class="text-muted small mb-0">Desenvolvedor Full-Stack — Backend, API REST e integração com banco de dados.</p>
-                </div>
-              </div>
+          <!-- Member 2 -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 text-center">
+            <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center text-white font-black text-3xl shadow-lg shadow-violet-500/20">
+              E
             </div>
-            <div class="col-md-6">
-              <div class="card shadow-sm border-0 h-100">
-                <div class="card-body p-4 text-center">
-                  <div class="rounded-circle bg-secondary text-white d-inline-flex align-items-center justify-content-center mb-3" style="width:64px;height:64px;font-weight:700;">E</div>
-                  <h3 class="h6 fw-bold">Equipe SGV</h3>
-                  <p class="text-muted small mb-0">Desenvolvedores Front-End — Interface Bootstrap 5, dashboard e experiência do usuário.</p>
-                </div>
-              </div>
-            </div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-1">Equipe SGV</h3>
+            <p class="text-emerald-600 dark:text-emerald-400 font-semibold text-xs uppercase tracking-wider mb-3">UI/UX & Front-End</p>
+            <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+              Design system moderno com Tailwind CSS, tabelas responsivas, gráficos com Chart.js e suporte nativo a Dark Mode.
+            </p>
           </div>
+        </div>
+      </div>
 
-          <div class="card shadow-sm border-0 mt-4">
-            <div class="card-body p-4">
-              <h2 class="h6 fw-bold mb-3">Tecnologias utilizadas</h2>
-              <div class="d-flex flex-wrap gap-2">
-                <span class="badge bg-dark">HTML5</span>
-                <span class="badge bg-dark">Bootstrap 5</span>
-                <span class="badge bg-dark">JavaScript</span>
-                <span class="badge bg-dark">Chart.js</span>
-                <span class="badge bg-secondary">Node.js</span>
-                <span class="badge bg-secondary">Express</span>
-                <span class="badge bg-secondary">MySQL / MariaDB</span>
-                <span class="badge bg-secondary">JWT</span>
-              </div>
-            </div>
-          </div>
+      <!-- Technologies Section -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 shadow-sm">
+        <h2 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-6 flex items-center gap-3">
+          <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          Tecnologias Utilizadas
+        </h2>
+        <div class="flex flex-wrap gap-2.5">
+          <span class="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60 px-3.5 py-1.5 rounded-xl font-semibold text-xs">HTML5 & Semantic Web</span>
+          <span class="bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200/80 dark:border-violet-800/60 px-3.5 py-1.5 rounded-xl font-semibold text-xs">Tailwind CSS (Dark Mode)</span>
+          <span class="bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/80 dark:border-emerald-800/60 px-3.5 py-1.5 rounded-xl font-semibold text-xs">JavaScript ES6+</span>
+          <span class="bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-800/60 px-3.5 py-1.5 rounded-xl font-semibold text-xs">Chart.js</span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl font-semibold text-xs">Node.js</span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl font-semibold text-xs">Express.js</span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl font-semibold text-xs">MySQL / MariaDB</span>
+          <span class="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-3.5 py-1.5 rounded-xl font-semibold text-xs">JSON Web Tokens (JWT)</span>
         </div>
       </div>
     </div>
   </main>
 
-  <footer class="py-3 mt-auto">
-    <div class="container"><span class="footer-logo text-white">SGV</span></div>
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto transition-colors duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <p class="font-medium">SGV — Sistema de Gerenciamento de Vendas</p>
+      <p>© 2026 Todos os direitos reservados</p>
+    </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/api.js"></script>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  </script>
 </body>
 </html>

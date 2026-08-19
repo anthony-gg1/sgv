@@ -1,102 +1,249 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SGV — Sistema de Gerenciamento de Vendas</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Previne FOUC: aplica classe dark antes de renderizar o body -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('sgv_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              750: '#293548',
+              850: '#172033',
+              950: '#0b1120',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Gerenciador de Tema & Estilos -->
+  <script src="assets/js/theme.js"></script>
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased">
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">SGV</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav" id="auth-nav">
-          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="sign-in.html">Sign-in</a></li>
-          <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
-        </ul>
+  <!-- Navbar -->
+  <nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-400 dark:via-purple-400 dark:to-violet-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+          SGV
+        </a>
+        
+        <!-- Desktop Nav -->
+        <div class="hidden md:flex items-center gap-6">
+          <div class="flex items-center gap-6" id="auth-nav">
+            <a href="index.html" class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 dark:border-indigo-400 pb-1">Home</a>
+            <a href="sign-in.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Sign-in</a>
+            <a href="login.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Login</a>
+            <a href="about.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">About Us</a>
+          </div>
+
+          <!-- Theme Toggle Button -->
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+          
+          <button id="mobile-menu-toggle" class="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 space-y-2 border-t border-slate-100 dark:border-slate-800">
+        <a href="index.html" class="block px-4 py-2 bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold rounded-lg transition-colors">Home</a>
+        <a href="sign-in.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Sign-in</a>
+        <a href="login.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Login</a>
+        <a href="about.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">About Us</a>
       </div>
     </div>
   </nav>
 
-  <main>
-    <section class="py-5 bg-white">
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-md-6">
-            <div class="card card-main rounded shadow-sm h-100">
-              <div class="card-body p-4">
-                <h2 class="card-title h4 mb-3">Bem-vindo ao SGV</h2>
-                <p class="card-text mb-0">
-                  O SGV foi criado para simplificar o controle das suas vendas e transformar
-                  dados em decisões mais inteligentes para o crescimento da sua empresa.
-                </p>
-              </div>
-            </div>
+  <main class="flex-1">
+    <!-- Hero Section -->
+    <section class="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+          <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/70 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 mb-4">
+            Gestão Comercial Inteligente
+          </span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight mb-4">
+            Simplifique o controle de vendas e maximize seus <span class="bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">lucros</span>.
+          </h1>
+          <p class="text-slate-600 dark:text-slate-400 text-lg sm:text-xl leading-relaxed">
+            Tenha visibilidade total do seu negócio com relatórios gráficos, comparativos mensais e gestão de catálogo em tempo real.
+          </p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+            <a href="sign-in.html" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-xl font-bold text-white bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/35 transition-all transform hover:-translate-y-0.5 active:scale-95">
+              Criar Conta Grátis
+            </a>
+            <!-- Botão Acessar Painel Refatorado com Alto Contraste no Modo Claro e Escuro -->
+            <a href="login.html" class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-3.5 rounded-xl font-semibold text-slate-800 dark:text-slate-100 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-750 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 transition-all shadow-sm hover:shadow-md active:scale-95">
+              Acessar Painel
+            </a>
           </div>
-          <div class="col-md-6">
-            <div class="card card-main rounded shadow-sm h-100">
-              <div class="card-body p-4">
-                <h2 class="card-title h4 mb-3">O que é o SGV?</h2>
-                <p class="card-text mb-0">
-                  O <strong>Sistema de Gerenciamento de Vendas (SGV)</strong> permite que
-                  empresas cadastrem produtos informando valor e quantidade vendida,
-                  calculando automaticamente o lucro de cada item e o lucro total consolidado.
-                  O sistema também gera relatórios com gráficos de desempenho e compara as
-                  vendas do mês atual com as do mês anterior.
-                </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+          <!-- Card 1: Bem-vindo -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl flex items-center justify-center shadow-md shadow-indigo-500/20">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1m2 1v2.5M2 21h20"></path>
+                </svg>
               </div>
+              <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">Controle Intuitivo</h2>
             </div>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base sm:text-lg">
+              O SGV foi criado para descomplicar a rotina financeira. Cadastre produtos com rapidez, acompanhe saídas e veja margens de lucro calculadas automaticamente.
+            </p>
+          </div>
+
+          <!-- Card 2: O que é SGV -->
+          <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm hover:shadow-md transition-all duration-300 p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800">
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 rounded-2xl flex items-center justify-center shadow-md shadow-violet-500/20">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                </svg>
+              </div>
+              <h2 class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100">Análise e Desempenho</h2>
+            </div>
+            <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base sm:text-lg">
+              Compare as métricas do mês atual com períodos anteriores através de gráficos interativos e indicadores de variação percentual.
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="pb-5">
-      <div class="container">
-        <div class="row g-4">
-          <div class="col-6 col-lg-3">
-            <a href="dashboard.html" class="nav-btn shadow-sm" role="button">
-              <span class="nav-btn-title">Início</span>
-              <span class="nav-btn-text">Gerencie produtos, lucros e visualize gráficos de desempenho.</span>
-            </a>
-          </div>
-          <div class="col-6 col-lg-3">
-            <a href="sign-in.html" class="nav-btn shadow-sm" role="button">
-              <span class="nav-btn-title">Sign-in</span>
-              <span class="nav-btn-text">Cadastro de novas empresas no sistema.</span>
-            </a>
-          </div>
-          <div class="col-6 col-lg-3">
-            <a href="login.html" class="nav-btn shadow-sm" role="button">
-              <span class="nav-btn-title">Login</span>
-              <span class="nav-btn-text">Acesso ao painel de controle da sua empresa.</span>
-            </a>
-          </div>
-          <div class="col-6 col-lg-3">
-            <a href="about.html" class="nav-btn shadow-sm" role="button">
-              <span class="nav-btn-title">About Us</span>
-              <span class="nav-btn-text">Informações sobre os desenvolvedores do projeto.</span>
-            </a>
-          </div>
+    <!-- Features Grid -->
+    <section class="py-12 sm:py-16 md:py-20 px-4 sm:px-6 lg:px-8 bg-slate-100/70 dark:bg-slate-900/50 transition-colors duration-200">
+      <div class="max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-3 tracking-tight">Funcionalidades Principais</h2>
+          <p class="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">Explore os módulos que aceleram a gestão da sua empresa</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <!-- Feature 1: Dashboard -->
+          <a href="dashboard.html" class="group bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-slate-200/80 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 cursor-pointer transform hover:-translate-y-1">
+            <div class="w-14 h-14 bg-indigo-50 dark:bg-indigo-950/60 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-7 h-7 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Painel</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Gerencie catálogo, registre vendas e visualize gráficos dinâmicos.</p>
+          </a>
+
+          <!-- Feature 2: Sign-in -->
+          <a href="sign-in.html" class="group bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-slate-200/80 dark:border-slate-800 hover:border-violet-400 dark:hover:border-violet-600 cursor-pointer transform hover:-translate-y-1">
+            <div class="w-14 h-14 bg-violet-50 dark:bg-violet-950/60 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-7 h-7 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">Cadastro</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Crie a conta da sua empresa de forma rápida e segura.</p>
+          </a>
+
+          <!-- Feature 3: Login -->
+          <a href="login.html" class="group bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-slate-200/80 dark:border-slate-800 hover:border-emerald-400 dark:hover:border-emerald-600 cursor-pointer transform hover:-translate-y-1">
+            <div class="w-14 h-14 bg-emerald-50 dark:bg-emerald-950/60 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-7 h-7 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Login Seguro</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Acesso criptografado e autenticado ao painel da sua empresa.</p>
+          </a>
+
+          <!-- Feature 4: About Us -->
+          <a href="about.html" class="group bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 p-6 border border-slate-200/80 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-600 cursor-pointer transform hover:-translate-y-1">
+            <div class="w-14 h-14 bg-amber-50 dark:bg-amber-950/60 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+              <svg class="w-7 h-7 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">About Us</h3>
+            <p class="text-slate-600 dark:text-slate-400 text-sm">Conheça o time de engenharia e as tecnologias utilizadas no SGV.</p>
+          </a>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="py-3 mt-auto">
-    <div class="container">
-      <span class="footer-logo text-white">SGV</span>
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto transition-colors duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <p class="font-medium">SGV — Sistema de Gerenciamento de Vendas</p>
+      <p>© 2026 Todos os direitos reservados</p>
     </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/api.js"></script>
+  <script>
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  </script>
 </body>
 </html>

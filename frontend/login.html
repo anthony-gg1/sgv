@@ -1,62 +1,162 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login — SGV</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <!-- Previne FOUC: aplica classe dark antes de renderizar o body -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('sgv_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              750: '#293548',
+              850: '#172033',
+              950: '#0b1120',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Gerenciador de Tema & Estilos -->
+  <script src="assets/js/theme.js"></script>
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased">
 
-  <nav class="navbar navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">SGV</a>
+  <!-- Navbar -->
+  <nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-400 dark:via-purple-400 dark:to-violet-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+          SGV
+        </a>
+
+        <!-- Theme Toggle Button -->
+        <button 
+          type="button"
+          data-theme-toggle 
+          class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer" 
+          aria-label="Alternar tema"
+        >
+          <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+          </svg>
+          <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </button>
+      </div>
     </div>
   </nav>
 
-  <main class="py-5">
-    <div class="container">
-      <div class="auth-card">
-        <div class="text-center mb-4">
-          <h1 class="h3 fw-bold">Entrar no SGV</h1>
-          <p class="text-muted">Acesse o painel da sua empresa.</p>
+  <main class="flex-1 py-8 sm:py-12 md:py-16 px-4 sm:px-6 lg:px-8 flex items-center justify-center">
+    <div class="w-full max-w-md">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-600 to-violet-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+          </svg>
         </div>
+        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-2">Entrar no SGV</h1>
+        <p class="text-slate-600 dark:text-slate-400 text-sm">Acesse o painel comercial da sua empresa</p>
+      </div>
 
-        <div id="alert-container"></div>
+      <!-- Alert Container -->
+      <div id="alert-container" class="mb-6"></div>
 
-        <div class="card shadow-sm border-0">
-          <div class="card-body p-4">
-            <form id="form-login">
-              <div class="mb-3">
-                <label for="email" class="form-label">E-mail</label>
-                <input type="email" class="form-control" id="email" required>
-              </div>
-              <div class="mb-4">
-                <label for="senha" class="form-label">Senha</label>
-                <input type="password" class="form-control" id="senha" required>
-              </div>
-              <button type="submit" class="btn btn-dark w-100">Entrar</button>
-            </form>
+      <!-- Form Card -->
+      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8">
+        <form id="form-login" class="space-y-5">
+          <!-- Email Field -->
+          <div>
+            <label for="email" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">E-mail</label>
+            <input 
+              type="email" 
+              id="email" 
+              required 
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all"
+              placeholder="seu@email.com"
+            >
+          </div>
+
+          <!-- Password Field -->
+          <div>
+            <label for="senha" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Senha</label>
+            <input 
+              type="password" 
+              id="senha" 
+              required 
+              class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all"
+              placeholder="••••••••"
+            >
+          </div>
+
+          <!-- Submit Button -->
+          <button 
+            type="submit" 
+            class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-3 rounded-xl transition-all shadow-md hover:shadow-lg active:scale-95 text-sm mt-6"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+
+      <!-- Demo Account Info Box -->
+      <div class="mt-6 bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/60 rounded-2xl p-4 sm:p-5">
+        <div class="flex gap-3">
+          <div class="flex-shrink-0">
+            <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-bold text-amber-900 dark:text-amber-300 text-xs uppercase tracking-wider">Conta Demo Disponível</h3>
+            <p class="text-amber-800 dark:text-amber-200 text-xs sm:text-sm mt-1">
+              <code class="bg-white/80 dark:bg-slate-800 px-2 py-0.5 rounded-md font-mono text-xs border border-amber-200/60 dark:border-slate-700">demo@sgv.com</code> / 
+              <code class="bg-white/80 dark:bg-slate-800 px-2 py-0.5 rounded-md font-mono text-xs border border-amber-200/60 dark:border-slate-700">demo123</code>
+            </p>
           </div>
         </div>
-
-        <div class="alert alert-light border mt-3 mb-0 small">
-          <strong>Conta demo:</strong> demo@sgv.com / demo123
-        </div>
-
-        <p class="text-center mt-3 mb-0">
-          Não tem conta? <a href="sign-in.html">Cadastre-se</a>
-        </p>
       </div>
+
+      <!-- Register Link -->
+      <p class="text-center mt-6 text-sm text-slate-600 dark:text-slate-400">
+        Não tem conta? 
+        <a href="sign-in.html" class="font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+          Cadastre-se
+        </a>
+      </p>
     </div>
   </main>
 
-  <footer class="py-3 mt-auto">
-    <div class="container"><span class="footer-logo text-white">SGV</span></div>
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto transition-colors duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <p class="font-medium">SGV — Sistema de Gerenciamento de Vendas</p>
+      <p>© 2026 Todos os direitos reservados</p>
+    </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/login.js"></script>
 </body>

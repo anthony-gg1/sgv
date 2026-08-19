@@ -1,226 +1,436 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel — SGV</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>Painel de Controle — SGV</title>
+  
+  <!-- Previne FOUC: aplica classe dark antes de renderizar o body -->
+  <script>
+    (function() {
+      const savedTheme = localStorage.getItem('sgv_theme');
+      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            slate: {
+              750: '#293548',
+              850: '#172033',
+              950: '#0b1120',
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Gerenciador de Tema & Estilos -->
+  <script src="assets/js/theme.js"></script>
   <link href="assets/css/style.css" rel="stylesheet">
 </head>
-<body>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col antialiased">
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-      <a class="navbar-brand" href="index.html">SGV</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav" id="auth-nav">
-          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="dashboard.html">Painel</a></li>
-        </ul>
+  <!-- Navbar -->
+  <nav class="bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 sticky top-0 z-50 transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Logo -->
+        <div class="flex items-center gap-3">
+          <a href="index.html" class="text-2xl font-black bg-gradient-to-r from-indigo-600 via-indigo-500 to-violet-600 dark:from-indigo-400 dark:via-purple-400 dark:to-violet-400 bg-clip-text text-transparent hover:opacity-90 transition-opacity">
+            SGV
+          </a>
+          <span class="hidden sm:inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200/80 dark:border-indigo-800/60">
+            Painel Pro
+          </span>
+        </div>
+        
+        <!-- Desktop Nav & Theme Toggle -->
+        <div class="hidden md:flex items-center gap-6">
+          <div class="flex items-center gap-6" id="auth-nav">
+            <a href="index.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">Home</a>
+            <a href="dashboard.html" class="text-indigo-600 dark:text-indigo-400 font-semibold border-b-2 border-indigo-600 dark:border-indigo-400 pb-1">Painel</a>
+            <a href="about.html" class="text-slate-700 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 font-medium transition-colors">About Us</a>
+          </div>
+
+          <!-- Theme Switcher Button -->
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <!-- Moon Icon (Light Mode active) -->
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <!-- Sun Icon (Dark Mode active) -->
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Mobile Controls (Theme Toggle + Hamburger) -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button 
+            type="button"
+            data-theme-toggle 
+            class="p-2 rounded-xl text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all border border-slate-200/80 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer" 
+            aria-label="Alternar tema"
+          >
+            <svg class="theme-icon-moon w-5 h-5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <svg class="theme-icon-sun w-5 h-5 hidden text-amber-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9h-1m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+          </button>
+          
+          <button id="mobile-menu-toggle" class="p-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-700 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Mobile Menu Dropdown -->
+      <div id="mobile-menu" class="hidden md:hidden pb-4 pt-2 space-y-2 border-t border-slate-100 dark:border-slate-800">
+        <a href="index.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">Home</a>
+        <a href="dashboard.html" class="block px-4 py-2 bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 font-bold rounded-lg transition-colors">Painel</a>
+        <a href="about.html" class="block px-4 py-2 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-slate-800 rounded-lg transition-colors">About Us</a>
       </div>
     </div>
   </nav>
 
-  <div class="page-hero">
-    <div class="container">
-      <h1>Painel de Vendas</h1>
-      <p id="empresa-nome">Carregando...</p>
+  <!-- Page Hero Header -->
+  <section class="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 dark:from-slate-900 dark:via-indigo-950 dark:to-slate-900 text-white py-8 sm:py-10 border-b border-indigo-500/20 dark:border-slate-800 shadow-sm transition-colors duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight">Painel de Vendas</h1>
+          <div class="flex items-center gap-2 mt-1.5">
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            <p id="empresa-nome" class="text-indigo-100 dark:text-slate-300 text-base font-medium">Carregando...</p>
+          </div>
+        </div>
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/10 dark:bg-slate-800/80 backdrop-blur-md text-white border border-white/20 dark:border-slate-700">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Tempo Real
+          </span>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <main class="pb-5">
-    <div class="container">
-      <div id="alert-container" class="mb-3"></div>
+  <!-- Main Content Container -->
+  <main class="flex-1 py-6 sm:py-8 lg:py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Dynamic Alert Container -->
+      <div id="alert-container" class="mb-6"></div>
 
-      <!-- Resumo -->
-      <div class="row g-3 mb-4">
-        <div class="col-6 col-lg-3">
-          <div class="card stat-card shadow-sm h-100">
-            <div class="card-body">
-              <p class="text-muted small mb-1">Produtos</p>
-              <h2 class="h4 mb-0" id="stat-produtos">0</h2>
+      <!-- Resumo / Key Stats Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 mb-8">
+        <!-- Card: Produtos -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200/80 dark:border-slate-800 p-5 transition-all duration-300 hover:-translate-y-0.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Produtos</p>
+              <h2 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100" id="stat-produtos">0</h2>
+            </div>
+            <div class="w-12 h-12 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-100 dark:border-indigo-800/50 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-indigo-600 dark:text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
             </div>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="card stat-card shadow-sm h-100">
-            <div class="card-body">
-              <p class="text-muted small mb-1">Vendas</p>
-              <h2 class="h4 mb-0" id="stat-vendas">0</h2>
+
+        <!-- Card: Vendas -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200/80 dark:border-slate-800 p-5 transition-all duration-300 hover:-translate-y-0.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Vendas</p>
+              <h2 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100" id="stat-vendas">0</h2>
+            </div>
+            <div class="w-12 h-12 bg-violet-50 dark:bg-violet-950/60 border border-violet-100 dark:border-violet-800/50 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
             </div>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="card stat-card shadow-sm h-100">
-            <div class="card-body">
-              <p class="text-muted small mb-1">Lucro total</p>
-              <h2 class="h4 mb-0 text-success" id="stat-lucro">R$ 0,00</h2>
+
+        <!-- Card: Lucro Total -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200/80 dark:border-slate-800 p-5 transition-all duration-300 hover:-translate-y-0.5">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Lucro Total</p>
+              <h2 class="text-3xl font-extrabold text-emerald-600 dark:text-emerald-400" id="stat-lucro">R$ 0,00</h2>
+            </div>
+            <div class="w-12 h-12 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-100 dark:border-emerald-800/50 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
             </div>
           </div>
         </div>
-        <div class="col-6 col-lg-3">
-          <div class="card stat-card shadow-sm h-100" id="stat-variacao-card">
-            <div class="card-body">
-              <p class="text-muted small mb-1">Variação mensal</p>
-              <h2 class="h4 mb-0" id="stat-variacao">0%</h2>
+
+        <!-- Card: Variação Mensal -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200/80 dark:border-slate-800 p-5 transition-all duration-300 hover:-translate-y-0.5" id="stat-variacao-card">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1">Variação Mensal</p>
+              <h2 class="text-3xl font-extrabold text-slate-900 dark:text-slate-100" id="stat-variacao">0%</h2>
+            </div>
+            <div class="w-12 h-12 bg-amber-50 dark:bg-amber-950/60 border border-amber-100 dark:border-amber-800/50 rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+              </svg>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Comparativo -->
-      <div class="row g-4 mb-4">
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h3 class="h6 text-muted">Lucro consolidado</h3>
-              <p class="h3 fw-bold mb-0" id="lucro-consolidado">R$ 0,00</p>
-            </div>
+      <!-- Comparativo Section Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+          <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1.5">Lucro Consolidado</p>
+          <p class="text-2xl sm:text-3xl font-extrabold text-indigo-600 dark:text-indigo-400" id="lucro-consolidado">R$ 0,00</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+          <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1.5">Lucro — Mês Atual</p>
+          <p class="text-2xl sm:text-3xl font-extrabold text-violet-600 dark:text-violet-400" id="mes-atual-lucro">R$ 0,00</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+          <p class="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider mb-1.5">Lucro — Mês Anterior</p>
+          <p class="text-2xl sm:text-3xl font-extrabold text-emerald-600 dark:text-emerald-400" id="mes-anterior-lucro">R$ 0,00</p>
+        </div>
+      </div>
+
+      <!-- Gráficos Section -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <!-- Lucro por Produto Chart -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Lucro por Produto</h2>
+            <span class="text-xs text-slate-400 dark:text-slate-500 font-medium">Histórico Total</span>
+          </div>
+          <div class="relative chart-container">
+            <canvas id="chart-lucros"></canvas>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h3 class="h6 text-muted">Lucro — mês atual</h3>
-              <p class="h3 fw-bold mb-0" id="mes-atual-lucro">R$ 0,00</p>
-            </div>
+
+        <!-- Comparativo Mensal Chart -->
+        <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Comparativo Mensal</h2>
+            <span class="text-xs text-slate-400 dark:text-slate-500 font-medium">Mês Atual vs Anterior</span>
           </div>
-        </div>
-        <div class="col-md-4">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h3 class="h6 text-muted">Lucro — mês anterior</h3>
-              <p class="h3 fw-bold mb-0" id="mes-anterior-lucro">R$ 0,00</p>
-            </div>
+          <div class="relative chart-container">
+            <canvas id="chart-comparativo"></canvas>
           </div>
         </div>
       </div>
 
-      <!-- Gráficos -->
-      <div class="row g-4 mb-4">
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h2 class="h6 fw-bold mb-3">Lucro por produto</h2>
-              <div class="chart-container">
-                <canvas id="chart-lucros"></canvas>
+      <!-- Formulários e Tabelas (2 Colunas no Desktop) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Left Column: Formulários -->
+        <div class="space-y-6">
+          <!-- Card: Cadastrar / Editar Produto -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100" id="form-produto-title">Cadastrar Produto</h2>
+              <div class="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
               </div>
             </div>
+            
+            <form id="form-produto" class="space-y-4">
+              <input type="hidden" id="produto-id">
+              
+              <div>
+                <label for="produto-nome" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Nome do Produto</label>
+                <input 
+                  type="text" 
+                  id="produto-nome" 
+                  required 
+                  class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all" 
+                  placeholder="Ex: Teclado Mecânico"
+                >
+              </div>
+
+              <div>
+                <label for="produto-descricao" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Descrição <span class="text-slate-400 font-normal lowercase">(opcional)</span></label>
+                <input 
+                  type="text" 
+                  id="produto-descricao" 
+                  class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all" 
+                  placeholder="Ex: Switch Blue RGB"
+                >
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="produto-venda" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Preço Venda (R$)</label>
+                  <input 
+                    type="number" 
+                    id="produto-venda" 
+                    step="0.01" 
+                    min="0" 
+                    required 
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all"
+                    placeholder="0,00"
+                  >
+                </div>
+                <div>
+                  <label for="produto-custo" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Preço Custo (R$)</label>
+                  <input 
+                    type="number" 
+                    id="produto-custo" 
+                    step="0.01" 
+                    min="0" 
+                    required 
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:bg-white dark:focus:bg-slate-800 transition-all"
+                    placeholder="0,00"
+                  >
+                </div>
+              </div>
+
+              <div class="flex gap-2.5 pt-2">
+                <button 
+                  type="submit" 
+                  class="flex-1 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95 text-sm"
+                >
+                  Salvar
+                </button>
+                <button 
+                  type="button" 
+                  id="btn-cancelar-edicao" 
+                  class="flex-1 hidden bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold py-2.5 rounded-xl transition-all text-sm"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Card: Registrar Venda -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 p-6">
+            <div class="flex items-center justify-between mb-5">
+              <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Registrar Venda</h2>
+              <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+              </div>
+            </div>
+
+            <form id="form-venda" class="space-y-4">
+              <div>
+                <label for="venda-produto" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Selecionar Produto</label>
+                <select 
+                  id="venda-produto" 
+                  required 
+                  class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 transition-all"
+                ></select>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="venda-quantidade" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Quantidade</label>
+                  <input 
+                    type="number" 
+                    id="venda-quantidade" 
+                    min="1" 
+                    value="1" 
+                    required 
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 transition-all"
+                  >
+                </div>
+                <div>
+                  <label for="venda-data" class="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">Data</label>
+                  <input 
+                    type="date" 
+                    id="venda-data" 
+                    required 
+                    class="w-full px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 transition-all"
+                  >
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-sm hover:shadow-md active:scale-95 text-sm mt-2"
+              >
+                Confirmar Venda
+              </button>
+            </form>
           </div>
         </div>
-        <div class="col-lg-6">
-          <div class="card shadow-sm border-0 h-100">
-            <div class="card-body">
-              <h2 class="h6 fw-bold mb-3">Comparativo mensal</h2>
-              <div class="chart-container">
-                <canvas id="chart-comparativo"></canvas>
+
+        <!-- Right Column: Tabelas Modernas e Responsivas -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- Tabela: Produtos Cadastrados -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+            <div class="p-5 sm:px-6 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Produtos Cadastrados</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Gerencie preços de custo, venda e margens de lucro</p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Produtos e Vendas -->
-      <div class="row g-4 mb-4">
-        <div class="col-lg-5">
-          <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-              <h2 class="h6 fw-bold mb-3" id="form-produto-title">Cadastrar produto</h2>
-              <form id="form-produto">
-                <input type="hidden" id="produto-id">
-                <div class="mb-3">
-                  <label class="form-label" for="produto-nome">Nome</label>
-                  <input type="text" class="form-control" id="produto-nome" required>
-                </div>
-                <div class="mb-3">
-                  <label class="form-label" for="produto-descricao">Descrição</label>
-                  <input type="text" class="form-control" id="produto-descricao">
-                </div>
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <label class="form-label" for="produto-venda">Preço de venda (R$)</label>
-                    <input type="number" class="form-control" id="produto-venda" step="0.01" min="0" required>
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label" for="produto-custo">Preço de custo (R$)</label>
-                    <input type="number" class="form-control" id="produto-custo" step="0.01" min="0" required>
-                  </div>
-                </div>
-                <div class="d-flex gap-2">
-                  <button type="submit" class="btn btn-dark">Salvar</button>
-                  <button type="button" class="btn btn-outline-secondary d-none" id="btn-cancelar-edicao">Cancelar</button>
-                </div>
-              </form>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Nome</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Descrição</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Venda</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Custo</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lucro Un.</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-produtos" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
             </div>
           </div>
 
-          <div class="card shadow-sm border-0 mt-4">
-            <div class="card-body p-4">
-              <h2 class="h6 fw-bold mb-3">Registrar venda</h2>
-              <form id="form-venda">
-                <div class="mb-3">
-                  <label class="form-label" for="venda-produto">Produto</label>
-                  <select class="form-select" id="venda-produto" required></select>
-                </div>
-                <div class="row g-2 mb-3">
-                  <div class="col-6">
-                    <label class="form-label" for="venda-quantidade">Quantidade</label>
-                    <input type="number" class="form-control" id="venda-quantidade" min="1" required>
-                  </div>
-                  <div class="col-6">
-                    <label class="form-label" for="venda-data">Data</label>
-                    <input type="date" class="form-control" id="venda-data" required>
-                  </div>
-                </div>
-                <button type="submit" class="btn btn-dark">Registrar venda</button>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-lg-7">
-          <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body p-4">
-              <h2 class="h6 fw-bold mb-3">Produtos cadastrados</h2>
-              <div class="table-responsive">
-                <table class="table table-sm align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>Nome</th>
-                      <th>Descrição</th>
-                      <th>Venda</th>
-                      <th>Custo</th>
-                      <th>Lucro un.</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabela-produtos"></tbody>
-                </table>
+          <!-- Tabela: Histórico de Vendas -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+            <div class="p-5 sm:px-6 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">Histórico de Vendas</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Registro detalhado de transações efetuadas</p>
               </div>
             </div>
-          </div>
-
-          <div class="card shadow-sm border-0">
-            <div class="card-body p-4">
-              <h2 class="h6 fw-bold mb-3">Histórico de vendas</h2>
-              <div class="table-responsive">
-                <table class="table table-sm align-middle mb-0">
-                  <thead>
-                    <tr>
-                      <th>Data</th>
-                      <th>Produto</th>
-                      <th>Qtd</th>
-                      <th>Receita</th>
-                      <th>Lucro</th>
-                      <th></th>
-                    </tr>
-                  </thead>
-                  <tbody id="tabela-vendas"></tbody>
-                </table>
-              </div>
+            
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead class="bg-slate-50/80 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-slate-800">
+                  <tr>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Data</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Produto</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Qtd</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Receita</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lucro</th>
+                    <th scope="col" class="px-6 py-3.5 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="tabela-vendas" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -228,16 +438,33 @@
     </div>
   </main>
 
-  <footer class="py-3 mt-auto">
-    <div class="container"><span class="footer-logo text-white">SGV</span></div>
+  <!-- Footer -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 px-4 sm:px-6 lg:px-8 mt-auto transition-colors duration-200">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <p class="font-medium">SGV — Sistema de Gerenciamento de Vendas</p>
+      <p>© 2026 Todos os direitos reservados</p>
+    </div>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/dashboard.js"></script>
   <script>
-    document.getElementById('venda-data').value = new Date().toISOString().slice(0, 10);
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+    
+    // Set default date to today
+    const dataInput = document.getElementById('venda-data');
+    if (dataInput && !dataInput.value) {
+      dataInput.value = new Date().toISOString().slice(0, 10);
+    }
   </script>
 </body>
 </html>
